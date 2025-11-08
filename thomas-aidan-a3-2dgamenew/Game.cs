@@ -13,7 +13,6 @@ namespace MohawkGame2D
 
         // Place your variables here:
         float x;
-        float radius = 50;
         float speed = 200;
 
         /// <summary>
@@ -46,7 +45,7 @@ namespace MohawkGame2D
             Draw.LineColor = Color.Black;
             Draw.FillColor = Color.Green;
             Draw.LineSize = 3;
-            Draw.Rectangle(300, 265, 105, 105); ; // Square that jumps over the spikes, this is the player
+            Draw.Rectangle(300, 265, 105, 105); // Square that jumps over the spikes, this is the player
         }
 
         /// <summary>
