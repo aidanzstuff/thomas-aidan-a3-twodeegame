@@ -15,6 +15,8 @@ namespace MohawkGame2D
         float x;
         float speed = 200;
 
+        public static class Text;
+
         /// <summary>
         ///     Setup runs once before the game loop begins.
         /// </summary>
@@ -36,7 +38,7 @@ namespace MohawkGame2D
             Draw.LineColor = Color.Black;
             Draw.FillColor = Color.Blue;
             Draw.LineSize = 3;
-            Draw.Triangle(90, 370, 140, 265, 195, 370); // Triangle acting as a "Spike"
+            Draw.Triangle(x + 90, y + 370, x + 140, y + 265, x + 195, y + 370); // Triangle acting as a "Spike"
         }
 
         void DrawPlayer(float x, float y)
@@ -45,7 +47,7 @@ namespace MohawkGame2D
             Draw.LineColor = Color.Black;
             Draw.FillColor = Color.Green;
             Draw.LineSize = 3;
-            Draw.Rectangle(300, 265, 105, 105); // Square that jumps over the spikes, this is the player
+            Draw.Rectangle(x + 300, y + 265, x + 105, y + 105); // Square that jumps over the spikes, this is the player
         }
 
         /// <summary>
@@ -65,7 +67,7 @@ namespace MohawkGame2D
             // Draw the circle
             Draw.LineSize = 3;
             Draw.FillColor = Color.Blue;
-            DrawSpike(x, Window.Height / 2);
+            DrawSpike(480 - x, 0);
             DrawGround(0, 0);
             DrawPlayer(0, 0);
             // Check to see if spacebar key is held down
