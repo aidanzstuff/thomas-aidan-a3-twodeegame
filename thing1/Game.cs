@@ -175,5 +175,5 @@ namespace MohawkGame2D
             float gamma = 1.0f - alpha - beta;
             return alpha >= 0 && beta >= 0 && gamma >= 0;
         }
-    }
+}
 }
