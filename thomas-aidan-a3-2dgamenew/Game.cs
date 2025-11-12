@@ -11,32 +11,19 @@ namespace MohawkGame2D
         float spikespeed = 0;
         int points = 0;
 
-        // --- Jump and physics variables ---
-        float playerY = 0;          // Player vertical position offset
-        float velocityY = 0;        // Vertical speed
-        float gravity = 600f;       // Pulls player back down
-        float jumpForce = -450f;    // Negative because up is decreasing Y
-        bool isGrounded = true;     // True when on the ground
-
+        float playerY = 0;
+        float velocityY = 0;
+        float gravity = 600f;
+        float jumpForce = -450f;
+        bool isGrounded = true;
         bool collided = false;
+        bool gameOver = false; // <-- moved here (outside Update)
 
         public void Setup()
         {
             Window.SetTitle("2D Game Assignment 3");
             Window.SetSize(720, 480);
             Window.TargetFPS = 60;
-
-            // initialize the text system (loads default fonts)
-            Text.Initialize();
-
-            // optional default styling
-            Text.Size = 24;            // text size
-            Text.Color = Color.Black;  // color for text
-                                       // Load your font
-            Font myFont = Text.LoadFont("assets/fonts/Coolveticarg.otf", 32);
-
-            // Set as the default font for drawing text
-            Text.Font = myFont;
         }
 
         void DrawGround(float x, float y)
@@ -65,44 +52,41 @@ namespace MohawkGame2D
         public void Update()
         {
             Window.ClearBackground(Color.OffWhite);
-            bool gameOver = false;
-            x += Time.DeltaTime * speed + spikespeed;
 
-            // If game is over, show "Game Over" text and stop the game
+            // if game over, show message and wait for restart
             if (gameOver)
             {
-                Text.Draw("GAME OVER", 250, 200, Text.Font);
-                Text.Draw("Press R to Restart", 230, 240, Text.Font);
+                Text.Color = Color.Black;
+                Text.Draw("GAME OVER", 250, 200);
+                Text.Draw("Press R to Restart", 230, 240);
 
-                // Optionally restart
                 if (Input.IsKeyboardKeyPressed(KeyboardInput.R))
-                {
                     RestartGame();
-                }
 
-                return; // skip the rest of Update
+                return;
             }
 
-            // When spike moves off-screen, reset
-            if (x > 480) // adjust this number based on when it fully leaves the screen
+            x += Time.DeltaTime * speed + spikespeed;
+
+            Text.Color = Color.Black;
+            Text.Draw($"Points: {points}", 480, 50);
+
+            if (x > 480)
             {
                 x = 0;
-                spikespeed += (float)0.1;
+                spikespeed += 0.1f;
                 points += 10;
             }
 
-            // --- Handle jumping ---
             if (Input.IsKeyboardKeyPressed(KeyboardInput.Space) && isGrounded)
             {
                 velocityY = jumpForce;
                 isGrounded = false;
             }
 
-            // Apply gravity
             velocityY += gravity * Time.DeltaTime;
             playerY += velocityY * Time.DeltaTime;
 
-            // Ground collision (stop falling)
             if (playerY >= 0)
             {
                 playerY = 0;
@@ -110,43 +94,37 @@ namespace MohawkGame2D
                 isGrounded = true;
             }
 
-            // --- Define spike triangle positions ---
             Vector2 triA = new Vector2(500 - x + 90, 370);
             Vector2 triB = new Vector2(500 - x + 140, 265);
             Vector2 triC = new Vector2(500 - x + 195, 370);
 
-            // --- Player rectangle ---
             float px = 300;
             float py = 270 + playerY;
             float size = 100;
             RectangleF playerRect = new RectangleF(px, py, size, size);
 
-            // --- Collision check ---
             collided = CheckTriangleRectangleCollision(triA, triB, triC, playerRect);
 
-            // If collision happens → end game
             if (collided)
-            {
-                gameOver = true;
-            }
+                gameOver = true; // this now persists!
 
-            // --- Draw all objects ---
             DrawSpike(500 - x, 0);
             DrawGround(0, 0);
             DrawPlayer(0, 0);
-
-            void RestartGame()
-            {
-                x = 0;
-                playerY = 0;
-                velocityY = 0;
-                isGrounded = true;
-                collided = false;
-                gameOver = false;
-            }
         }
 
-        // === Collision Functions ===
+        void RestartGame()
+        {
+            x = 0;
+            playerY = 0;
+            velocityY = 0;
+            isGrounded = true;
+            collided = false;
+            gameOver = false;
+            points = 0;
+            spikespeed = 0;
+        }
+
         bool CheckTriangleRectangleCollision(Vector2 a, Vector2 b, Vector2 c, RectangleF rect)
         {
             if (rect.Contains(a.X, a.Y) || rect.Contains(b.X, b.Y) || rect.Contains(c.X, c.Y))
